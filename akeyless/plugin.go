@@ -5,7 +5,7 @@ import (
 )
 
 func Plugin() *plugin.Plugin {
-	return &plugin.Plugin{
+	p := &plugin.Plugin{
 		PluginInfo: &plugin.PluginInfo{
 			Name:        "akeyless",
 			Description: "Steampipe plugin for Akeyless",
@@ -17,4 +17,6 @@ func Plugin() *plugin.Plugin {
 			// TODO: Add table definitions
 		},
 	}
+
+	return p
 }
