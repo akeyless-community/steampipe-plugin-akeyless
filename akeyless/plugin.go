@@ -1,17 +1,17 @@
 package akeyless
 
 import (
+	"context"
+
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 )
 
-func Plugin() *plugin.Plugin {
+func Plugin(ctx context.Context) *plugin.Plugin {
 	p := &plugin.Plugin{
-		PluginInfo: &plugin.PluginInfo{
-			Name:        "akeyless",
-			Description: "Steampipe plugin for Akeyless",
-		},
-		ConnectionConfig: map[string]*plugin.PluginConfigSchema{
-			// TODO: Add connection configurations
+		Name: "steampipe-plugin-akeyless",
+		ConnectionConfigSchema: &plugin.ConnectionConfigSchema{
+			NewInstance: ConfigInstance,
+			Schema: 	ConfigSchema,
 		},
 		TableMap: map[string]*plugin.Table{
 			// TODO: Add table definitions

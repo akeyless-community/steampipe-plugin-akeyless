@@ -2,136 +2,110 @@ package akeyless
 
 import (
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/schema"
 )
 
-func ConnectionConfig() *plugin.PluginConfigSchema {
-	return &plugin.PluginConfigSchema{
-		Fields: map[string]*plugin.Schema{
-			"access_id": {
-				Type:        plugin.TypeString,
-				Optional:    true,
-				Description: "Access ID",
-			},
-			"access_type": {
-				Type:        plugin.TypeString,
-				Optional:    true,
-				Description: "Access Type (access_key/password/saml/ldap/k8s/azure_ad/oidc/aws_iam/universal_identity/jwt/gcp/cert)",
-			},
-			"access_key": {
-				Type:        plugin.TypeString,
-				Optional:    true,
-				Description: "Access key (relevant only for access-type=access_key)",
-			},
-			"cloud_id": {
-				Type:        plugin.TypeString,
-				Optional:    true,
-				Description: "The cloud identity (relevant only for access-type=azure_ad,aws_iam,gcp)",
-			},
-			"uid_token": {
-				Type:        plugin.TypeString,
-				Optional:    true,
-				Description: "The universal_identity token (relevant only for access-type=universal_identity)",
-			},
-			"jwt": {
-				Type:        plugin.TypeString,
-				Optional:    true,
-				Description: "The Json Web Token (relevant only for access-type=jwt/oidc)",
-			},
-			"admin_password": {
-				Type:        plugin.TypeString,
-				Optional:    true,
-				Description: "Password (relevant only for access-type=password)",
-			},
-			"admin_email": {
-				Type:        plugin.TypeString,
-				Optional:    true,
-				Description: "Email (relevant only for access-type=password)",
-			},
-			"account_id": {
-				Type:        plugin.TypeString,
-				Optional:    true,
-				Description: "Account id (relevant only for access-type=password where the email address is associated with more than one account)",
-			},
-			"oidc_sp": {
-				Type:        plugin.TypeString,
-				Optional:    true,
-				Description: "OIDC Service Provider (relevant only for access-type=oidc, inferred if empty), supported SPs: google, github",
-			},
-			"ldap_proxy_url": {
-				Type:        plugin.TypeString,
-				Optional:    true,
-				Description: "Address URL for LDAP proxy (relevant only for access-type=ldap)",
-			},
-			"username": {
-				Type:        plugin.TypeString,
-				Optional:    true,
-				Description: "LDAP username (relevant only for access-type=ldap)",
-			},
-			"password": {
-				Type:        plugin.TypeString,
-				Optional:    true,
-				Description: "LDAP password (relevant only for access-type=ldap)",
-			},
-			"gcp_audience": {
-				Type:        plugin.TypeString,
-				Optional:    true,
-				Description: "GCP audience to use in signed JWT (relevant only for access-type=gcp)",
-			},
-			"gateway_url": {
-				Type:        plugin.TypeString,
-				Optional:    true,
-				Description: "Gateway URL for the K8S authenticated (relevant only for access-type=k8s/oauth2)",
-			},
-			"k8s_auth_config_name": {
-				Type:        plugin.TypeString,
-				Optional:    true,
-				Description: "The K8S Auth config name (relevant only for access-type=k8s)",
-			},
-			"k8s_service_account_token": {
-				Type:        plugin.TypeString,
-				Optional:    true,
-				Description: "The K8S service account token",
-			},
-			"cert_file_name": {
-				Type:        plugin.TypeString,
-				Optional:    true,
-				Description: "Name of the cert file to use (relevant only for access-type=cert)",
-			},
-			"cert_data": {
-				Type:        plugin.TypeString,
-				Optional:    true,
-				Description: "Certificate data encoded in base64. Used if file was not provided. (relevant only for access-type=cert)",
-			},
-			"key_file_name": {
-				Type:        plugin.TypeString,
-				Optional:    true,
-				Description: "Name of the private key file to use (relevant only for access-type=cert)",
-			},
-			"key_data": {
-				Type:        plugin.TypeString,
-				Optional:    true,
-				Description: "Private key data encoded in base64. Used if file was not provided.(relevant only for access-type=cert)",
-			},
-			"debug": {
-				Type:        plugin.TypeBool,
-				Optional:    true,
-				Description: "Set to 'true' for a printout of the authorization jwts'",
-			},
-			"json": {
-				Type:        plugin.TypeBool,
-				Optional:    true,
-				Description: "Set output format to JSON",
-			},
-			"jq_expression": {
-				Type:        plugin.TypeString,
-				Optional:    true,
-				Description: "JQ expression to filter result output",
-			},
-			"no_creds_cleanup": {
-				Type:        plugin.TypeBool,
-				Optional:    true,
-				Description: "Do not clean local temporary expired creds",
-			},
-		},
+type akeylessConfig struct {
+	AccessID               *string `cty:"access_id"`
+	AccessType             *string `cty:"access_type"`
+	AccessKey              *string `cty:"access_key"`
+	CloudID                *string `cty:"cloud_id"`
+	UIDToken               *string `cty:"uid_token"`
+	JWT                    *string `cty:"jwt"`
+	AdminPassword          *string `cty:"admin_password"`
+	AdminEmail             *string `cty:"admin_email"`
+	AccountID              *string `cty:"account_id"`
+	OIDCSP                 *string `cty:"oidc_sp"`
+	LdapProxyURL           *string `cty:"ldap_proxy_url"`
+	Username               *string `cty:"username"`
+	Password               *string `cty:"password"`
+	GcpAudience            *string `cty:"gcp_audience"`
+	GatewayURL             *string `cty:"gateway_url"`
+	K8SAuthConfigName      *string `cty:"k8s_auth_config_name"`
+	K8SServiceAccountToken *string `cty:"k8s_service_account_token"`
+	CertFileName           *string `cty:"cert_file_name"`
+	CertData               *string `cty:"cert_data"`
+	KeyFileName            *string `cty:"key_file_name"`
+	KeyData                *string `cty:"key_data"`
+}
+
+var ConfigSchema = map[string]*schema.Attribute{
+	"access_id": {
+		Type:     schema.TypeString,
+		Required: true,
+	},
+	"access_type": {
+		Type:     schema.TypeString,
+		Required: true,
+	},
+	"access_key": {
+		Type: schema.TypeString,
+	},
+	"cloud_id": {
+		Type: schema.TypeString,
+	},
+	"uid_token": {
+		Type: schema.TypeString,
+	},
+	"jwt": {
+		Type: schema.TypeString,
+	},
+	"admin_password": {
+		Type: schema.TypeString,
+	},
+	"admin_email": {
+		Type: schema.TypeString,
+	},
+	"account_id": {
+		Type: schema.TypeString,
+	},
+	"oidc_sp": {
+		Type: schema.TypeString,
+	},
+	"ldap_proxy_url": {
+		Type: schema.TypeString,
+	},
+	"username": {
+		Type: schema.TypeString,
+	},
+	"password": {
+		Type: schema.TypeString,
+	},
+	"gcp_audience": {
+		Type: schema.TypeString,
+	},
+	"gateway_url": {
+		Type: schema.TypeString,
+	},
+	"k8s_auth_config_name": {
+		Type: schema.TypeString,
+	},
+	"k8s_service_account_token": {
+		Type: schema.TypeString,
+	},
+	"cert_file_name": {
+		Type: schema.TypeString,
+	},
+	"cert_data": {
+		Type: schema.TypeString,
+	},
+	"key_file_name": {
+		Type: schema.TypeString,
+	},
+	"key_data": {
+		Type: schema.TypeString,
+	},
+}
+
+func ConfigInstance() interface{} {
+	return &akeylessConfig{}
+}
+
+// GetConfig :: retrieve and cast connection config from query data
+func GetConfig(connection *plugin.Connection) akeylessConfig {
+	if connection == nil || connection.Config == nil {
+		return akeylessConfig{}
 	}
+	config, _ := connection.Config.(akeylessConfig)
+	return config
 }
