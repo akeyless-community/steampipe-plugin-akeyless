@@ -7,6 +7,11 @@ import (
 func ConnectionConfig() *plugin.PluginConfigSchema {
 	return &plugin.PluginConfigSchema{
 		Fields: map[string]*plugin.Schema{
+			"access_type": {
+				Type:        plugin.TypeString,
+				Required:    true,
+				Description: "The authentication method to use. Options are: api_key_auth, aws_iam_auth, azure_ad_auth, jwt_auth, email_auth, uid_auth, cert_auth.",
+			},
 			"api_key_auth": {
 				Type:        plugin.TypeMap,
 				Optional:    true,
