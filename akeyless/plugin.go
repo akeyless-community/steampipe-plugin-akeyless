@@ -1,7 +1,7 @@
 package akeyless
 
 import (
-	"github.com/turbot/steampipe-plugin-sdk/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 )
 
 func Plugin() *plugin.Plugin {
