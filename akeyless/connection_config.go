@@ -6,16 +6,16 @@ import (
 )
 
 type akeylessConfig struct {
-	AccessID               *string `cty:"access_id"`
+	AccessId               *string `cty:"access_id"`
 	AccessType             *string `cty:"access_type"`
 	AccessKey              *string `cty:"access_key"`
-	CloudID                *string `cty:"cloud_id"`
-	UIDToken               *string `cty:"uid_token"`
-	JWT                    *string `cty:"jwt"`
+	CloudId                *string `cty:"cloud_id"`
+	UidToken               *string `cty:"uid_token"`
+	Jwt                    *string `cty:"jwt"`
 	AdminPassword          *string `cty:"admin_password"`
 	AdminEmail             *string `cty:"admin_email"`
-	AccountID              *string `cty:"account_id"`
-	OIDCSP                 *string `cty:"oidc_sp"`
+	AccountId              *string `cty:"account_id"`
+	OidcSp                 *string `cty:"oidc_sp"`
 	LdapProxyURL           *string `cty:"ldap_proxy_url"`
 	Username               *string `cty:"username"`
 	Password               *string `cty:"password"`

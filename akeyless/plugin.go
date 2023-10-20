@@ -11,10 +11,10 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 		Name: "steampipe-plugin-akeyless",
 		ConnectionConfigSchema: &plugin.ConnectionConfigSchema{
 			NewInstance: ConfigInstance,
-			Schema: 	ConfigSchema,
+			Schema:      ConfigSchema,
 		},
 		TableMap: map[string]*plugin.Table{
-			// TODO: Add table definitions
+			"akeyless_auth_method": tableAuthMethod(),
 		},
 	}
 
