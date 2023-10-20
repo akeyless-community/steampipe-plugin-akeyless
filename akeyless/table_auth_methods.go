@@ -5,6 +5,7 @@ import (
 
 	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
 
 	"github.com/akeylesslabs/akeyless-go/v2"
 )
@@ -25,6 +26,7 @@ func tableAuthMethod() *plugin.Table {
 }
 
 func listAuthMethods(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
+
 	conn, err := connect(ctx, d)
 	if err != nil {
 		return nil, err
@@ -38,45 +40,84 @@ func listAuthMethods(ctx context.Context, d *plugin.QueryData, h *plugin.Hydrate
 		return nil, err
 	}
 
-	authMethods := listAuthMethodResponse.AuthMethods
+	authMethods := listAuthMethodResponse.GetAuthMethods()
 
-	for _, authMethod := range *authMethods {
-		var accessIdToUse = authMethod.AuthMethodAccessId
-		if authMethod.AccessInfo.RulesType != nil && *authMethod.AccessInfo.RulesType == "email_pass" {
-			accessIdToUse = authMethod.AccessInfo.AccessIdAlias
+	for _, authMethod := range authMethods {
+
+		// serialize the authMethod object into a map
+
+		plugin.Logger(ctx).Trace("listAuthMethods", "authMethod", authMethod)
+
+		// all of the properties of the auth method are optional, so we need to check for nils and create the AuthMethod struct accordingly
+		authMethodListItem := &AuthMethod{}
+
+		authMethodName := authMethod.GetAuthMethodName()
+		authMethodListItem.Path = authMethodName
+
+		var accessIdToUse = authMethod.GetAuthMethodAccessId()
+		if authMethod.AccessInfo != nil && authMethod.AccessInfo.RulesType != nil && *authMethod.AccessInfo.RulesType == "email_pass" {
+			accessIdToUse = authMethod.AccessInfo.GetAccessIdAlias()
 		}
-		d.StreamListItem(ctx, &AuthMethod{
-			Path:                      *authMethod.AuthMethodName,
-			AuthMethodAccessId:        *accessIdToUse,
-			AccountId:                 *authMethod.AccountId,
-			AccessInfoRulesType:       getStringValue(authMethod.AccessInfo.RulesType),
-			AccessInfoJwtTtl:          *authMethod.AccessInfo.JwtTtl,
-			AccessInfoAccessExpires:   *authMethod.AccessInfo.AccessExpires,
-			AccessInfoCidrWhiteList:   getStringValue(authMethod.AccessInfo.CidrWhitelist),
-			AccessInfoGwCidrWhiteList: getStringValue(authMethod.AccessInfo.GwCidrWhitelist),
-			AccessInfoForceSubClaims:  *authMethod.AccessInfo.ForceSubClaims,
-			CreationDate:              authMethod.CreationDate.String(),
-			ModificationDate:          authMethod.ModificationDate.String(),
-		})
+
+		authMethodListItem.AuthMethodAccessId = accessIdToUse
+
+		authMethodAccountId := authMethod.GetAccountId()
+		authMethodListItem.AccountId = authMethodAccountId
+
+		accessInfo := authMethod.GetAccessInfo()
+
+		accessInfoRulesType := accessInfo.GetRulesType()
+		authMethodListItem.AccessInfoRulesType = accessInfoRulesType
+
+		accessInfoJwtTtl := accessInfo.GetJwtTtl()
+		authMethodListItem.AccessInfoJwtTtl = accessInfoJwtTtl
+
+		accessInfoAccessExpires := accessInfo.GetAccessExpires()
+		authMethodListItem.AccessInfoAccessExpires = accessInfoAccessExpires
+
+		accessInfoCidrWhiteList := accessInfo.GetCidrWhitelist()
+		authMethodListItem.AccessInfoCidrWhiteList = accessInfoCidrWhiteList
+
+		accessInfoGwCidrWhiteList := accessInfo.GetGwCidrWhitelist()
+		authMethodListItem.AccessInfoGwCidrWhiteList = accessInfoGwCidrWhiteList
+
+		accessInfoForceSubClaims := accessInfo.GetForceSubClaims()
+		authMethodListItem.AccessInfoForceSubClaims = accessInfoForceSubClaims
+
+		creationDate := authMethod.GetCreationDate()
+		authMethodListItem.CreationDate = creationDate.String()
+
+		modificationDate := authMethod.GetModificationDate()
+		authMethodListItem.ModificationDate = modificationDate.String()
+
+		d.StreamListItem(ctx, authMethodListItem)
 	}
 
 	return nil, nil
-}
-
-func getStringValue(value *string) string {
-	if value == nil {
-		return ""
-	}
-	return *value
 }
 
 func getAuthMethod(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	// TODO - add get logic here
-	return nil, nil
+	// return nil, nil
+	return &AuthMethod{
+		Path:                      "test",
+		AuthMethodName:            "test",
+		AuthMethodAccessId:        "test",
+		AccountId:                 "test",
+		AccessInfoRulesType:       "test",
+		AccessInfoJwtTtl:          1,
+		AccessInfoAccessExpires:   1,
+		AccessInfoCidrWhiteList:   "test",
+		AccessInfoGwCidrWhiteList: "test",
+		AccessInfoForceSubClaims:  true,
+		CreationDate:              "test",
+		ModificationDate:          "test",
+	}, nil
 }
 
 type AuthMethod struct {
 	Path                      string
+	AuthMethodName            string
 	AuthMethodAccessId        string
 	AccountId                 string
 	AccessInfoRulesType       string
@@ -95,6 +136,12 @@ func authMethodColumns() []*plugin.Column {
 			Name:        "path",
 			Type:        proto.ColumnType_STRING,
 			Description: "The full path of the auth method which includes the name.",
+		},
+		{
+			Name:        "auth_method_name",
+			Type:        proto.ColumnType_STRING,
+			Description: "The full path of the auth method which includes the name.",
+			Transform:   transform.FromField("Path"),
 		},
 		{
 			Name:        "auth_method_access_id",

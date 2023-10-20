@@ -1,5 +1,5 @@
 connection "akeyless" {
-  plugin = "akeyless-community/akeyless"
+  plugin = "akeyless"
   access_id = "your_access_id"
   access_key = "your_access_key"
   access_type = "your_access_type"
