@@ -3,6 +3,7 @@ package akeyless
 import (
 	"context"
 
+	"errors"
 	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
@@ -44,51 +45,11 @@ func listAuthMethods(ctx context.Context, d *plugin.QueryData, h *plugin.Hydrate
 
 	for _, authMethod := range authMethods {
 
-		// serialize the authMethod object into a map
-
 		plugin.Logger(ctx).Trace("listAuthMethods", "authMethod", authMethod)
 
-		// all of the properties of the auth method are optional, so we need to check for nils and create the AuthMethod struct accordingly
 		authMethodListItem := &AuthMethod{}
 
-		authMethodName := authMethod.GetAuthMethodName()
-		authMethodListItem.Path = authMethodName
-
-		var accessIdToUse = authMethod.GetAuthMethodAccessId()
-		if authMethod.AccessInfo != nil && authMethod.AccessInfo.RulesType != nil && *authMethod.AccessInfo.RulesType == "email_pass" {
-			accessIdToUse = authMethod.AccessInfo.GetAccessIdAlias()
-		}
-
-		authMethodListItem.AuthMethodAccessId = accessIdToUse
-
-		authMethodAccountId := authMethod.GetAccountId()
-		authMethodListItem.AccountId = authMethodAccountId
-
-		accessInfo := authMethod.GetAccessInfo()
-
-		accessInfoRulesType := accessInfo.GetRulesType()
-		authMethodListItem.AccessInfoRulesType = accessInfoRulesType
-
-		accessInfoJwtTtl := accessInfo.GetJwtTtl()
-		authMethodListItem.AccessInfoJwtTtl = accessInfoJwtTtl
-
-		accessInfoAccessExpires := accessInfo.GetAccessExpires()
-		authMethodListItem.AccessInfoAccessExpires = accessInfoAccessExpires
-
-		accessInfoCidrWhiteList := accessInfo.GetCidrWhitelist()
-		authMethodListItem.AccessInfoCidrWhiteList = accessInfoCidrWhiteList
-
-		accessInfoGwCidrWhiteList := accessInfo.GetGwCidrWhitelist()
-		authMethodListItem.AccessInfoGwCidrWhiteList = accessInfoGwCidrWhiteList
-
-		accessInfoForceSubClaims := accessInfo.GetForceSubClaims()
-		authMethodListItem.AccessInfoForceSubClaims = accessInfoForceSubClaims
-
-		creationDate := authMethod.GetCreationDate()
-		authMethodListItem.CreationDate = creationDate.String()
-
-		modificationDate := authMethod.GetModificationDate()
-		authMethodListItem.ModificationDate = modificationDate.String()
+		authMethodListItemTranslate(authMethod, authMethodListItem)
 
 		d.StreamListItem(ctx, authMethodListItem)
 	}
@@ -96,23 +57,75 @@ func listAuthMethods(ctx context.Context, d *plugin.QueryData, h *plugin.Hydrate
 	return nil, nil
 }
 
+// newFunction creates a new AuthMethod object from the given akeyless.AuthMethod and AuthMethodListItem.
+// It sets the values of the AuthMethodListItem fields based on the values of the akeyless.AuthMethod fields.
+func authMethodListItemTranslate(authMethod akeyless.AuthMethod, authMethodListItem *AuthMethod) {
+	authMethodName := authMethod.GetAuthMethodName()
+	authMethodListItem.Path = authMethodName
+
+	var accessIdToUse = authMethod.GetAuthMethodAccessId()
+	if authMethod.AccessInfo != nil && authMethod.AccessInfo.RulesType != nil && *authMethod.AccessInfo.RulesType == "email_pass" {
+		accessIdToUse = authMethod.AccessInfo.GetAccessIdAlias()
+	}
+
+	authMethodListItem.AuthMethodAccessId = accessIdToUse
+
+	authMethodAccountId := authMethod.GetAccountId()
+	authMethodListItem.AccountId = authMethodAccountId
+
+	accessInfo := authMethod.GetAccessInfo()
+
+	accessInfoRulesType := accessInfo.GetRulesType()
+	authMethodListItem.AccessInfoRulesType = accessInfoRulesType
+
+	accessInfoJwtTtl := accessInfo.GetJwtTtl()
+	authMethodListItem.AccessInfoJwtTtl = accessInfoJwtTtl
+
+	accessInfoAccessExpires := accessInfo.GetAccessExpires()
+	authMethodListItem.AccessInfoAccessExpires = accessInfoAccessExpires
+
+	accessInfoCidrWhiteList := accessInfo.GetCidrWhitelist()
+	authMethodListItem.AccessInfoCidrWhiteList = accessInfoCidrWhiteList
+
+	accessInfoGwCidrWhiteList := accessInfo.GetGwCidrWhitelist()
+	authMethodListItem.AccessInfoGwCidrWhiteList = accessInfoGwCidrWhiteList
+
+	accessInfoForceSubClaims := accessInfo.GetForceSubClaims()
+	authMethodListItem.AccessInfoForceSubClaims = accessInfoForceSubClaims
+
+	creationDate := authMethod.GetCreationDate()
+	authMethodListItem.CreationDate = creationDate.String()
+
+	modificationDate := authMethod.GetModificationDate()
+	authMethodListItem.ModificationDate = modificationDate.String()
+}
+
 func getAuthMethod(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	// TODO - add get logic here
-	// return nil, nil
-	return &AuthMethod{
-		Path:                      "test",
-		AuthMethodName:            "test",
-		AuthMethodAccessId:        "test",
-		AccountId:                 "test",
-		AccessInfoRulesType:       "test",
-		AccessInfoJwtTtl:          1,
-		AccessInfoAccessExpires:   1,
-		AccessInfoCidrWhiteList:   "test",
-		AccessInfoGwCidrWhiteList: "test",
-		AccessInfoForceSubClaims:  true,
-		CreationDate:              "test",
-		ModificationDate:          "test",
-	}, nil
+	conn, err := connect(ctx, d)
+	if err != nil {
+		return nil, err
+	}
+
+	q := d.EqualsQuals
+	path := q["path"].GetStringValue()
+
+	getAuthMethodBody := akeyless.NewGetAuthMethodWithDefaults()
+	getAuthMethodBody.Token = conn.token
+	getAuthMethodBody.Name = path
+
+	getAuthMethodResponse, httpResponse, err := conn.client.GetAuthMethod(ctx).Body(*getAuthMethodBody).Execute()
+	if err != nil {
+		return nil, err
+	}
+
+	if httpResponse.StatusCode == 404 {
+		return nil, errors.New("auth method [" + path + "] not found")
+	} else {
+		authMethod := getAuthMethodResponse
+		authMethodListItem := &AuthMethod{}
+		authMethodListItemTranslate(authMethod, authMethodListItem)
+		return authMethodListItem, nil
+	}
 }
 
 type AuthMethod struct {
