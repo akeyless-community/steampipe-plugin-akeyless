@@ -150,6 +150,7 @@ func authMethodColumns() []*plugin.Column {
 			Name:        "path",
 			Type:        proto.ColumnType_STRING,
 			Description: "The full path of the auth method which includes the name.",
+			Transform:   transform.FromField("Path"),
 		},
 		{
 			Name:        "auth_method_name",
@@ -161,51 +162,61 @@ func authMethodColumns() []*plugin.Column {
 			Name:        "auth_method_access_id",
 			Type:        proto.ColumnType_STRING,
 			Description: "The full virtual file folder path of the auth method which includes the name.",
+			Transform:   transform.FromField("AuthMethodAccessId"),
 		},
 		{
 			Name:        "account_id",
 			Type:        proto.ColumnType_STRING,
 			Description: "The account ID of the auth method.",
+			Transform:   transform.FromField("AccountId"),
 		},
 		{
 			Name:        "access_info_rules_type",
 			Type:        proto.ColumnType_STRING,
 			Description: "The rules type to use for association of auth method to access role for the auth method.",
+			Transform:   transform.FromField("AccessInfoRulesType"),
 		},
 		{
 			Name:        "access_info_jwt_ttl",
 			Type:        proto.ColumnType_INT,
 			Description: "The JWT TTL for the auth method.",
+			Transform:   transform.FromField("AccessInfoJwtTtl"),
 		},
 		{
 			Name:        "access_info_access_expires",
 			Type:        proto.ColumnType_INT,
 			Description: "The access expiration date. This parameter is optional. Leave it empty for access to continue without an expiration date.",
+			Transform:   transform.FromField("AccessInfoAccessExpires"),
 		},
 		{
 			Name:        "access_info_cidr_white_list",
 			Type:        proto.ColumnType_STRING,
 			Description: "Enter a comma-separated list of CIDR blocks from which the client can issue calls to the proxy. By 'client,' we mean CURL, SDK, etc. This parameter is optional. Leave it empty for unrestricted access.",
+			Transform:   transform.FromField("AccessInfoCidrWhiteList"),
 		},
 		{
 			Name:        "access_info_gw_cidr_white_list",
 			Type:        proto.ColumnType_STRING,
 			Description: "Comma separated CIDR blocks. If specified, the Gateway using this IP range will be trusted to forward the original client IP. If empty, the Gateway's IP address will be used.",
+			Transform:   transform.FromField("AccessInfoGwCidrWhiteList"),
 		},
 		{
 			Name:        "access_info_force_sub_claims",
 			Type:        proto.ColumnType_BOOL,
 			Description: "If set to true, access roles will enforce role-association must include sub claims.",
+			Transform:   transform.FromField("AccessInfoForceSubClaims"),
 		},
 		{
 			Name:        "creation_date",
 			Type:        proto.ColumnType_STRING,
 			Description: "The creation date of the auth method.",
+			Transform:   transform.FromField("CreationDate"),
 		},
 		{
 			Name:        "modification_date",
 			Type:        proto.ColumnType_STRING,
 			Description: "The modification date of the auth method.",
+			Transform:   transform.FromField("ModificationDate"),
 		},
 	}
 }
