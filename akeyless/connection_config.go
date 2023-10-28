@@ -6,93 +6,27 @@ import (
 )
 
 type akeylessConfig struct {
-	AccessId               *string `cty:"access_id"`
-	AccessType             *string `cty:"access_type"`
-	AccessKey              *string `cty:"access_key"`
-	CloudId                *string `cty:"cloud_id"`
-	UidToken               *string `cty:"uid_token"`
-	Jwt                    *string `cty:"jwt"`
-	AdminPassword          *string `cty:"admin_password"`
-	AdminEmail             *string `cty:"admin_email"`
-	AccountId              *string `cty:"account_id"`
-	OidcSp                 *string `cty:"oidc_sp"`
-	LdapProxyURL           *string `cty:"ldap_proxy_url"`
-	Username               *string `cty:"username"`
-	Password               *string `cty:"password"`
-	GcpAudience            *string `cty:"gcp_audience"`
-	GatewayURL             *string `cty:"gateway_url"`
-	K8SAuthConfigName      *string `cty:"k8s_auth_config_name"`
-	K8SServiceAccountToken *string `cty:"k8s_service_account_token"`
-	CertFileName           *string `cty:"cert_file_name"`
-	CertData               *string `cty:"cert_data"`
-	KeyFileName            *string `cty:"key_file_name"`
-	KeyData                *string `cty:"key_data"`
+	CLIPath      *string `cty:"cli_path"`      // Path to the Akeyless CLI executable
+	Profile      *string `cty:"profile"`       // Name of the Akeyless CLI profile to use
+	AkeylessPath *string `cty:"akeyless_path"` // Path to the .akeyless directory
+	ExpiryBuffer *string `cty:"expiry_buffer"` // Buffer time before token expiry to trigger re-authentication "2h" or "10m" (default)
+	Debug        *string `cty:"debug"`         // Debug flag to enable or disable debug logging
 }
 
 var ConfigSchema = map[string]*schema.Attribute{
-	"access_id": {
-		Type:     schema.TypeString,
-		Required: true,
-	},
-	"access_type": {
-		Type:     schema.TypeString,
-		Required: true,
-	},
-	"access_key": {
+	"cli_path": {
 		Type: schema.TypeString,
 	},
-	"cloud_id": {
+	"profile": {
 		Type: schema.TypeString,
 	},
-	"uid_token": {
+	"akeyless_path": {
 		Type: schema.TypeString,
 	},
-	"jwt": {
+	"expiry_buffer": {
 		Type: schema.TypeString,
 	},
-	"admin_password": {
-		Type: schema.TypeString,
-	},
-	"admin_email": {
-		Type: schema.TypeString,
-	},
-	"account_id": {
-		Type: schema.TypeString,
-	},
-	"oidc_sp": {
-		Type: schema.TypeString,
-	},
-	"ldap_proxy_url": {
-		Type: schema.TypeString,
-	},
-	"username": {
-		Type: schema.TypeString,
-	},
-	"password": {
-		Type: schema.TypeString,
-	},
-	"gcp_audience": {
-		Type: schema.TypeString,
-	},
-	"gateway_url": {
-		Type: schema.TypeString,
-	},
-	"k8s_auth_config_name": {
-		Type: schema.TypeString,
-	},
-	"k8s_service_account_token": {
-		Type: schema.TypeString,
-	},
-	"cert_file_name": {
-		Type: schema.TypeString,
-	},
-	"cert_data": {
-		Type: schema.TypeString,
-	},
-	"key_file_name": {
-		Type: schema.TypeString,
-	},
-	"key_data": {
+	"debug": {
 		Type: schema.TypeString,
 	},
 }

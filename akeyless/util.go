@@ -3,9 +3,11 @@ package akeyless
 import (
 	"context"
 	"fmt"
+	"strconv"
+	"time"
 
+	"github.com/akeyless-community/akeyless-sheller/sheller"
 	"github.com/akeylesslabs/akeyless-go/v2"
-	"github.com/go-errors/errors"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 )
 
@@ -55,55 +57,44 @@ func BuildAkeylessService(url ...string) *AkeylessService {
 func connect(ctx context.Context, d *plugin.QueryData) (*AkeylessService, error) {
 	akeylessConfig := GetConfig(d.Connection)
 
-	if akeylessConfig.AccessType == nil {
-		return nil, errors.New("A valid access_type property is required. (api_key/password/saml/ldap/k8s/azure_ad/oidc/aws_iam/universal_identity/jwt/gcp/cert)")
+	// Define the configuration
+	config := sheller.NewConfigWithDefaults()
+
+	// set any of the set properties from the akeylessConfig struct over any defaults
+	if akeylessConfig.CLIPath != nil && *akeylessConfig.CLIPath != "" {
+		config.CLIPath = *akeylessConfig.CLIPath
 	}
+	if akeylessConfig.Profile != nil && *akeylessConfig.Profile != "" {
+		config.Profile = *akeylessConfig.Profile
+	}
+	if akeylessConfig.AkeylessPath != nil && *akeylessConfig.AkeylessPath != "" {
+		config.AkeylessPath = *akeylessConfig.AkeylessPath
+	}
+	if akeylessConfig.ExpiryBuffer != nil && *akeylessConfig.ExpiryBuffer != "" {
+		expiryBufferString := string(*akeylessConfig.ExpiryBuffer)
+		expiryBuffer, err := time.ParseDuration(expiryBufferString)
+		if err == nil {
+			config.ExpiryBuffer = expiryBuffer
+		}
+	}
+	if akeylessConfig.Debug != nil && *akeylessConfig.Debug != "" {
+		debugString := string(*akeylessConfig.Debug)
+		debug, err := strconv.ParseBool(debugString)
+		if err == nil {
+			config.Debug = debug
+		}
+	}
+
+	token, err := sheller.InitializeAndGetToken(config)
+	if err != nil {
+		fmt.Printf("Failed to initialize and get token: %v\n", err)
+	}
+
+	plugin.Logger(ctx).Trace("connect", "token", &token.Token)
 
 	akeylessService := BuildAkeylessService()
 
-	authType := loginType(*akeylessConfig.AccessType)
-
-	authBody, err := getAuthInfo(authType, akeylessConfig)
-	if err != nil {
-		return nil, err
-	}
-
-	var apiErr akeyless.GenericOpenAPIError
-
-	authOut, _, err := akeylessService.client.Auth(ctx).Body(*authBody).Execute()
-	if err != nil {
-		if errors.As(err, &apiErr) {
-			return nil, errors.New(fmt.Sprintf("authentication failed: %v", string(apiErr.Body())))
-		}
-		return nil, errors.New(fmt.Sprintf("authentication failed: %v", err))
-	}
-	token := authOut.GetToken()
-
-	akeylessService.token = &token
+	akeylessService.token = &token.Token
 
 	return akeylessService, nil
-}
-
-func getAuthInfo(authType loginType, akeylessConfig akeylessConfig) (*akeyless.Auth, error) {
-	authBody := akeyless.NewAuthWithDefaults()
-
-	err := setAuthBody(authBody, authType, akeylessConfig)
-	if err != nil {
-		return nil, err
-	}
-
-	return authBody, nil
-}
-
-func setAuthBody(authBody *akeyless.Auth, authType loginType, akeylessConfig akeylessConfig) error {
-	switch authType {
-	case ApiKeyLogin:
-		authBody.AccessId = akeylessConfig.AccessId
-		authBody.AccessKey = akeylessConfig.AccessKey
-		authBody.AccessType = akeylessConfig.AccessType
-		return nil
-	// case PasswordLogin:
-	default:
-		return fmt.Errorf("please choose supported auth type for login method: api_key/password/saml/ldap/k8s/azure_ad/oidc/aws_iam/universal_identity/jwt/gcp/cert")
-	}
 }

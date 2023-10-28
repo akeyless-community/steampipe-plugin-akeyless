@@ -1,8 +1,17 @@
 module github.com/akeyless-community/steampipe-plugin-akeyless
 
-go 1.21.2
+go 1.21.3
 
-require github.com/turbot/steampipe-plugin-sdk/v5 v5.6.2
+require (
+	github.com/akeyless-community/akeyless-sheller v0.0.0-20231028194843-7b88febabac2
+	github.com/turbot/steampipe-plugin-sdk/v5 v5.6.2
+)
+
+require (
+	github.com/hairyhenderson/go-which v0.2.0 // indirect
+	github.com/pelletier/go-toml v1.9.5 // indirect
+	github.com/spf13/afero v1.3.3 // indirect
+)
 
 require (
 	cloud.google.com/go v0.110.4 // indirect
@@ -79,7 +88,6 @@ require (
 	github.com/stevenle/topsort v0.2.0 // indirect
 	github.com/tkrajina/go-reflector v0.5.6 // indirect
 	github.com/turbot/go-kit v0.8.0-rc.0 // indirect
-	github.com/turbot/steampipe-plugin-sdk v1.8.3
 	github.com/ulikunitz/xz v0.5.10 // indirect
 	github.com/zclconf/go-cty v1.14.0 // indirect
 	go.opencensus.io v0.24.0 // indirect
