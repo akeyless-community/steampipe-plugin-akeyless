@@ -36,7 +36,7 @@ where
 
 select 
   access_info_rules_type, 
-  count(*)
+  count(*) as count_by_type
 from
     akeyless_auth_method
 group by
