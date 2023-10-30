@@ -1,28 +1,23 @@
 connection "akeyless" {
   plugin = "akeyless"
-  access_id = "your_access_id"
-  access_key = "your_access_key"
-  access_type = "your_access_type"
-  cloud_id = "your_cloud_id"
-  uid_token = "your_uid_token"
-  jwt = "your_jwt"
-  admin_password = "your_admin_password"
-  admin_email = "your_admin_email"
-  account_id = "your_account_id"
-  oidc_sp = "your_oidc_sp"
-  ldap_proxy_url = "your_ldap_proxy_url"
-  username = "your_username"
-  password = "your_password"
-  gcp_audience = "your_gcp_audience"
-  gateway_url = "your_gateway_url"
-  k8s_auth_config_name = "your_k8s_auth_config_name"
-  k8s_service_account_token = "your_k8s_service_account_token"
-  cert_file_name = "your_cert_file_name"
-  cert_data = "your_cert_data"
-  key_file_name = "your_key_file_name"
-  key_data = "your_key_data"
-  debug = "your_debug"
-  json = "your_json"
-  jq_expression = "your_jq_expression"
-  no_creds_cleanup = "your_no_creds_cleanup"
+
+  # Path to the Akeyless CLI executable. Will pull from system path if not specified.
+  # This can be set from the AKEYLESS_SHELLER_CLI_PATH environment variable.
+  cli_path = ""
+
+  # Name of the Akeyless CLI profile to use
+  # This can be set from the AKEYLESS_SHELLER_PROFILE environment variable.
+  profile = ""
+
+  # Path to the .akeyless directory. Will use the default path if not specified of ~/.akeyless
+  # This can be set from the AKEYLESS_SHELLER_HOME_DIRECTORY_PATH environment variable.
+  akeyless_path = ""
+
+  # Buffer time before token expiry to trigger re-authentication "2h" or "10m" (default)
+  # This can be set from the AKEYLESS_SHELLER_EXPIRY_BUFFER environment variable.
+  expiry_buffer = "10m"
+
+  # Debug flag to enable or disable debug logging, defaults to "" which is interpreted as false.
+  # This can be set from the AKEYLESS_SHELLER_DEBUG environment variable.  export AKEYLESS_SHELLER_DEBUG=true
+  debug = ""
 }
