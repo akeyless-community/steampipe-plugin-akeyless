@@ -5,7 +5,7 @@ connection "akeyless" {
   # This can be set from the AKEYLESS_SHELLER_CLI_PATH environment variable.
   cli_path = ""
 
-  # Name of the Akeyless CLI profile to use
+  # Name of the Akeyless CLI profile to use. Will use "default" if not specified.
   # This can be set from the AKEYLESS_SHELLER_PROFILE environment variable.
   profile = ""
 
@@ -13,7 +13,7 @@ connection "akeyless" {
   # This can be set from the AKEYLESS_SHELLER_HOME_DIRECTORY_PATH environment variable.
   akeyless_path = ""
 
-  # Buffer time before token expiry to trigger re-authentication "2h" or "10m" (default)
+  # Buffer time before token expiry to trigger re-authentication "2h" or "10m" (default) if not specified.
   # This can be set from the AKEYLESS_SHELLER_EXPIRY_BUFFER environment variable.
   expiry_buffer = "10m"
 
