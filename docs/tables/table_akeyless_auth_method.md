@@ -1,4 +1,4 @@
-# Table: auth_method
+# Table: akeyless_auth_method
 
 Each Authentication Method object is associated with an Access Role that grants permission (including Create, Read, Update, Delete, List, and Deny) to this Identity on Secrets, Targets, Roles, and Authentication Method objects stored inside the Akeyless SaaS solution.
 
