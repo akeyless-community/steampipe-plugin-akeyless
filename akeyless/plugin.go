@@ -14,7 +14,7 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 			Schema:      ConfigSchema,
 		},
 		TableMap: map[string]*plugin.Table{
-			"akeyless_auth_method": tableAuthMethod(),
+			"akeyless_auth_method": tableAkeylessAuthMethod(),
 		},
 	}
 

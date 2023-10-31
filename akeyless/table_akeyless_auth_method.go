@@ -12,7 +12,7 @@ import (
 	"github.com/akeylesslabs/akeyless-go/v2"
 )
 
-func tableAuthMethod() *plugin.Table {
+func tableAkeylessAuthMethod() *plugin.Table {
 	return &plugin.Table{
 		Name:        "akeyless_auth_method",
 		Description: "Akeyless Auth Methods",
