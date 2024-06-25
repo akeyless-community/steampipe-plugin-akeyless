@@ -3,98 +3,79 @@ package akeyless
 import (
 	"context"
 	"fmt"
-	"strconv"
 	"time"
 
-	"github.com/akeyless-community/akeyless-sheller/sheller"
-	"github.com/akeylesslabs/akeyless-go/v2"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
 )
 
-type loginType string
+func convertDisplayedDate(ctx context.Context, input *transform.TransformData) (interface{}, error) {
+	layout := "2006-01-02T15Z"
+	const logPrefix = "akeyless_utils.convertDisplayedDate"
 
-const (
-	ApiKeyLogin   loginType = "api_key"
-	PasswordLogin loginType = "password"
-	SamlLogin     loginType = "saml"
-	LdapLogin     loginType = "ldap"
-	K8sLogin      loginType = "k8s"
-	AzureAdLogin  loginType = "azure_ad"
-	OidcLogin     loginType = "oidc"
-	AwsIamLogin   loginType = "aws_iam"
-	UidLogin      loginType = "universal_identity"
-	CertLogin     loginType = "cert"
-)
-
-type AkeylessService struct {
-	client *akeyless.V2ApiService
-	token  *string
-}
-
-func newAkeylessService(client *akeyless.V2ApiService) *AkeylessService {
-	return &AkeylessService{
-		client: client,
-	}
-}
-
-func BuildAkeylessService(url ...string) *AkeylessService {
-
-	urlString := "https://api.akeyless.io"
-	if url != nil {
-		urlString = url[0] + "/api/v2"
-	}
-	client := akeyless.NewAPIClient(&akeyless.Configuration{
-		Servers: []akeyless.ServerConfiguration{
-			{
-				URL: urlString,
-			},
-		},
-	}).V2Api
-
-	return newAkeylessService(client)
-}
-
-func connect(ctx context.Context, d *plugin.QueryData) (*AkeylessService, error) {
-	akeylessConfig := GetConfig(d.Connection)
-
-	// Define the configuration
-	config := sheller.NewConfigWithDefaults()
-
-	// set any of the set properties from the akeylessConfig struct over any defaults
-	if akeylessConfig.CLIPath != nil && *akeylessConfig.CLIPath != "" {
-		config.CLIPath = *akeylessConfig.CLIPath
-	}
-	if akeylessConfig.Profile != nil && *akeylessConfig.Profile != "" {
-		config.Profile = *akeylessConfig.Profile
-	}
-	if akeylessConfig.AkeylessPath != nil && *akeylessConfig.AkeylessPath != "" {
-		config.AkeylessPath = *akeylessConfig.AkeylessPath
-	}
-	if akeylessConfig.ExpiryBuffer != nil && *akeylessConfig.ExpiryBuffer != "" {
-		expiryBufferString := string(*akeylessConfig.ExpiryBuffer)
-		expiryBuffer, err := time.ParseDuration(expiryBufferString)
-		if err == nil {
-			config.ExpiryBuffer = expiryBuffer
-		}
-	}
-	if akeylessConfig.Debug != nil && *akeylessConfig.Debug != "" {
-		debugString := string(*akeylessConfig.Debug)
-		debug, err := strconv.ParseBool(debugString)
-		if err == nil {
-			config.Debug = debug
+	if displayedDate, ok := input.Value.(string); ok {
+		if accDate, err := time.Parse(layout, displayedDate); err == nil {
+			return accDate, nil
+		} else {
+			plugin.Logger(ctx).Warn(logPrefix, "failed to parse displayed date", displayedDate, err)
+			return nil, nil
 		}
 	}
 
-	token, err := sheller.InitializeAndGetToken(config)
-	if err != nil {
-		fmt.Printf("Failed to initialize and get token: %v\n", err)
+	plugin.Logger(ctx).Warn(logPrefix, "failed to cast input value of displayed date", input.Value)
+
+	return nil, nil
+}
+
+func listTableTemplate[T any](ctx context.Context, qd *plugin.QueryData, _ *plugin.HydrateData, p apiClientProvider, fetcher apiDataFetcher[T]) (interface{}, error) {
+	{
+		pluginLogger := plugin.Logger(ctx)
+		logPrefix := fmt.Sprintf("%v.list", qd.Table.Name)
+
+		plugin.Logger(ctx).Trace(logPrefix, "start connecting to the api")
+
+		client, token, err := p.GetApiService(ctx, qd)
+
+		plugin.Logger(ctx).Trace(logPrefix, "connected")
+
+		if err != nil {
+			plugin.Logger(ctx).Error("faile")
+			return nil, err
+		}
+
+		var paginationToken *string = nil
+
+		pluginLogger.Trace(logPrefix, "start api list call")
+
+		for {
+			paginator, httpResp, err := fetcher.FetchData(ctx, client, token, paginationToken)
+
+			pluginLogger.Trace(logPrefix, "api list call return status ", httpResp.StatusCode)
+
+			if err != nil {
+				pluginLogger.Error(logPrefix, "list_error", err)
+				return nil, err
+			} else if httpResp.StatusCode != 200 {
+				return nil, fmt.Errorf("api list call return %v", httpResp.StatusCode)
+			}
+
+			pageData := paginator.GetPageItems()
+			pluginLogger.Trace(logPrefix, "api list call return  %v rows", len(pageData))
+
+			for _, item := range pageData {
+				qd.StreamListItem(ctx, item)
+			}
+
+			paginationToken = paginator.NextPageToken()
+
+			if paginationToken == nil {
+				pluginLogger.Trace(logPrefix, "no next page, completed")
+				break
+			}
+
+			pluginLogger.Trace(logPrefix, "next page exists, continue")
+		}
+
+		return nil, nil
 	}
-
-	plugin.Logger(ctx).Trace("connect", "token", &token.Token)
-
-	akeylessService := BuildAkeylessService()
-
-	akeylessService.token = &token.Token
-
-	return akeylessService, nil
 }
