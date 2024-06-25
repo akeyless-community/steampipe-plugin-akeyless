@@ -4,17 +4,27 @@ import (
 	"context"
 
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
 )
+
+const PluginName string = "steampipe-plugin-akeyless"
 
 func Plugin(ctx context.Context) *plugin.Plugin {
 	p := &plugin.Plugin{
-		Name: "steampipe-plugin-akeyless",
+		Name: PluginName,
+
 		ConnectionConfigSchema: &plugin.ConnectionConfigSchema{
-			NewInstance: ConfigInstance,
-			Schema:      ConfigSchema,
+			NewInstance: configInstance,
+			Schema:      configSchema,
 		},
+		DefaultTransform: transform.FromJSONTag(),
+
 		TableMap: map[string]*plugin.Table{
-			"akeyless_auth_method": tableAkeylessAuthMethod(),
+			rolesTableName:       tableRoles(),
+			targetsTableName:     tableTargets(),
+			authMethodsTableName: tableAuthMethods(),
+			itemsTableName:       tableItems(),
+			gatewaysTableName:    tableGateways(),
 		},
 	}
 

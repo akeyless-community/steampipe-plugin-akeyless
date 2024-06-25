@@ -1,23 +1,36 @@
 connection "akeyless" {
-  plugin = "akeyless"
+  plugin = "akeyless"  
 
-  # Path to the Akeyless CLI executable. Will pull from system path if not specified.
-  # This can be set from the AKEYLESS_SHELLER_CLI_PATH environment variable.
-  #cli_path = ""
+  # Defines the type of access. Supported types: "api_key", "aws_iam", "azure_ad", "gcp", "universal_identity", "k8s", "jwt".
+  #access_type = ""  
 
-  # Name of the Akeyless CLI profile to use. Will use "default" if not specified.
-  # This can be set from the AKEYLESS_SHELLER_PROFILE environment variable.
-  #profile = ""
+  # The access ID for authentication, required for all access types.
+  #access_id = ""  
 
-  # Path to the .akeyless directory. Will use the default path if not specified of ~/.akeyless
-  # This can be set from the AKEYLESS_SHELLER_HOME_DIRECTORY_PATH environment variable.
-  #akeyless_path = ""
+  # The access key or secret, paired with access_id.
+  #access_key = ""  
 
-  # Buffer time before token expiry to trigger re-authentication "2h" or "10m" (default) if not specified.
-  # This can be set from the AKEYLESS_SHELLER_EXPIRY_BUFFER environment variable.
-  #expiry_buffer = "10m"
+  # API URL for the Akeyless Gateway, the default URL is https://api.akeyless.io.
+  #api_url = ""  
 
-  # Debug flag to enable or disable debug logging, defaults to "" which is interpreted as false.
-  # This can be set from the AKEYLESS_SHELLER_DEBUG environment variable.  export AKEYLESS_SHELLER_DEBUG=true
-  #debug = ""
+  # JSON Web Token for JWT-based authentication.
+  #jwt = ""  
+
+  # User identity token for Universal Identity™ authentication.
+  #uid_token = ""  
+
+  # Audience for GCP authentication.
+  #gcp_audience = ""  
+
+  # Object ID for Azure AD authentication.
+  #azure_object_id = ""  
+
+  # Kubernetes service account token for Kubernetes-based authentication.
+  #k8s_service_account_token = ""  
+
+  # Name of the Kubernetes auth config.
+  #k8s_auth_config_name = ""  
+
+  # CA certificate for TLS verification of the Akeyless Gateway.
+  #gateway_ca_cert = ""  
 }
