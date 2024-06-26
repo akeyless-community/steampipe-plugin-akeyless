@@ -1,4 +1,4 @@
-![image]()
+![image](https://hub.steampipe.io/images/plugins/akeyless-community/akeyless-social-graphic.png)
 
 # Akeyless Plugin for Steampipe
 
