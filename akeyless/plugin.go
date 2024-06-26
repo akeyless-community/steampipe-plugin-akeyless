@@ -9,6 +9,8 @@ import (
 
 const PluginName string = "steampipe-plugin-akeyless"
 
+var PluginVersion string = ""
+
 func Plugin(ctx context.Context) *plugin.Plugin {
 	p := &plugin.Plugin{
 		Name: PluginName,

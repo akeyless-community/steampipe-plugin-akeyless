@@ -12,11 +12,6 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 )
 
-const (
-	akeylessClientType    = "steampipe-plugin"
-	akeylessClientVersion = "0.0.1"
-)
-
 type apiClientProvider interface {
 	GetApiService(ctx context.Context, d *plugin.QueryData) (*akeyless_sdk.V2ApiService, *string, error)
 }
@@ -47,11 +42,11 @@ func (p sdkApiClientProvider) GetApiService(ctx context.Context, d *plugin.Query
 		},
 		HTTPClient: httpClient,
 		DefaultHeader: map[string]string{
-			"akeylessclienttype":    akeylessClientType,
-			"akeylessclientversion": akeylessClientVersion},
+			"akeylessclienttype":    PluginName,
+			"akeylessclientversion": PluginVersion},
 	}).V2Api
 
-	pluginLogger.Trace(logPrefix, "client successfully created")
+	pluginLogger.Trace(logPrefix+" client successfully created", "akeylessclienttype", PluginName, "akeylessclientversion", PluginVersion)
 
 	token, err := authenticate(ctx, *config, client)
 
