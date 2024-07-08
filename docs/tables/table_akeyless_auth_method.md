@@ -3,19 +3,22 @@
 Akeyless authentication methods
 
 ## Examples
-### Basic Info
+
+### List all Authentication Methods with complete information
+
+```sql
+select
+  *
+from
+  akeyless_auth_method;
+```
+
+### List all Authentication Methods by Name and Date Created
 
 ```sql
 select
   auth_method_name,
   creation_date,
-  modification_date,
-  access_date,
-  account_id,
-  ttl,
-  rules_type,
-  force_sub_claims,
-  access_info 
 from
   akeyless_auth_method;
 ```
