@@ -17,7 +17,7 @@ from
 ```sql
 select
   display_name,
-  status,
+  status
 from
   akeyless_gateway;
 ```
