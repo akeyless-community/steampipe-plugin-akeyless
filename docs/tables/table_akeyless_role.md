@@ -7,12 +7,12 @@ Access roles
 
 ```sql
 select
-    role_name,
-    creation_date,
-    modification_date,
-    access_date,
-    rules,
-    role_auth_methods_assoc 
+  role_name,
+  creation_date,
+  modification_date,
+  access_date,
+  rules,
+  role_auth_methods_assoc 
 from
-   akeyless_role;
+  akeyless_role;
 ```
