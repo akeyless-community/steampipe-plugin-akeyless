@@ -76,14 +76,14 @@ jobs:
      run: |
       aws s3 cp ./dist s3://"${SERVICES_BUCKET_AWS}/services/steampipe-plugin-akeyless/release/${version}/" --recursive --exclude "*" --include "*.gz"
 
-#   - name: Slack Notification
-#     if: failure() || success()
-#     uses: rtCamp/action-slack-notify@v2
-#     env:
-#       SLACK_CHANNEL: 'operations'
-#       SLACK_COLOR: ${{ job.status }}
-#       SLACK_TITLE: 'Release Latest Steampipe Plugin Akeyless, Status: ${{ job.status }}!'
-#       SLACK_MESSAGE: 'Version:${{ env.version }}'
-#       SLACK_WEBHOOK: ${{ secrets.SLACK_OPERATIONS_WEBHOOK }}
-#       MSG_MINIMAL: true
-#       SLACK_FOOTER: Akeyless.io Release Steampipe Plugin Akeyless Pipeline
+   - name: Slack Notification
+     if: failure() || success()
+     uses: rtCamp/action-slack-notify@v2
+     env:
+       SLACK_CHANNEL: 'operations'
+       SLACK_COLOR: ${{ job.status }}
+       SLACK_TITLE: 'Release Latest Steampipe Plugin Akeyless, Status: ${{ job.status }}!'
+       SLACK_MESSAGE: 'Version:${{ env.version }}'
+       SLACK_WEBHOOK: ${{ secrets.SLACK_OPERATIONS_WEBHOOK }}
+       MSG_MINIMAL: true
+       SLACK_FOOTER: Akeyless.io Release Steampipe Plugin Akeyless Pipeline
