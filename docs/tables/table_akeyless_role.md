@@ -23,3 +23,14 @@ select
 from
   akeyless_role;
 ```
+
+### List all Roles created in the last 30 days
+
+```sql
+select
+  *
+from
+  akeyless_role
+where
+ creation_date >= CURRENT_TIMESTAMP - INTERVAL '30 days'
+```
