@@ -18,7 +18,7 @@ from
 ```sql
 select
   item_name,
-  item_sub_type,
+  item_sub_type
 from
   akeyless_item;
 ```
