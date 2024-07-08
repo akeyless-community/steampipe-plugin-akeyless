@@ -3,16 +3,23 @@
 Access roles
 
 ## Examples
-### Basic Info
+
+### List all Roles with complete information
+
+```sql
+select
+  *
+from
+  akeyless_role;
+```
+
+### List all Roles by Name, Created Date, and Rules
 
 ```sql
 select
   role_name,
   creation_date,
-  modification_date,
-  access_date,
-  rules,
-  role_auth_methods_assoc 
+  rules
 from
   akeyless_role;
 ```
