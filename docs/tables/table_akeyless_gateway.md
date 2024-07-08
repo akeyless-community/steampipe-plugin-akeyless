@@ -4,20 +4,20 @@ Akeyless gateways
 
 ## Examples
 
-### Basic Info
+### List all Gateways with complete information
 
 ```sql
 select
-  gateway_id,
+  *
+from
+  akeyless_gateway;
+```
+### List all Gateways by Name and Status
+
+```sql
+select
   display_name,
-  cluster_name,
-  cluster_url,
-  customer_fragments,
   status,
-  allowed,
-  allowed_access_ids,
-  default_protection_key_id,
-  default_secret_location 
 from
   akeyless_gateway;
 ```
