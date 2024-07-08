@@ -18,7 +18,7 @@ from
 ```sql
 select
   auth_method_name,
-  creation_date,
+  creation_date
 from
   akeyless_auth_method;
 ```
