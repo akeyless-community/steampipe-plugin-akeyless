@@ -1,5 +1,5 @@
 connection "akeyless" {
-  plugin = "akeyless"  
+  plugin = "akeyless-community"  
 
   # Defines the type of access. Supported types: "api_key", "aws_iam", "azure_ad", "gcp", "universal_identity", "k8s", "jwt".
   #access_type = ""  
