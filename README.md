@@ -14,7 +14,7 @@ Use SQL to query items, auth mehtods, roles, targets, gateways and more from Ake
 Install the plugin with [Steampipe](https://steampipe.io/downloads):
 
 ```shell
-steampipe plugin install akeyless/akeyless
+steampipe plugin install akeyless-community/akeyless
 ```
 
 [Configure the plugin](https://hub.steampipe.io/plugins/akeyless/akeyless#configuration) with your authentication method using the configuration file:

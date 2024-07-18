@@ -63,9 +63,6 @@ jobs:
       version: '~> v2'
       args: release --clean --skip=publish --timeout=60m
 
-   - name: List Build Artifacts
-     run: ls -laR ./dist
-
    - name: Connect to AWS using Github OIDC role
      uses: aws-actions/configure-aws-credentials@v4
      with:

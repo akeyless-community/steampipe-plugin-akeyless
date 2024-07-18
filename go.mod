@@ -1,4 +1,4 @@
-module github.com/akeylesslabs/steampipe-plugin-akeyless
+module github.com/akeyless-community/steampipe-plugin-akeyless
 
 go 1.22.2
 
