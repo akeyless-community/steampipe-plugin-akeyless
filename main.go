@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/akeylesslabs/steampipe-plugin-akeyless/akeyless"
+	"github.com/akeyless-community/steampipe-plugin-akeyless/akeyless"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 )
 
