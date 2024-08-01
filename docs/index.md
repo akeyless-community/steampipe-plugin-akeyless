@@ -1,13 +1,13 @@
 ---
 organization: Akeyless Security
 category: ["security"]
-icon_url: "/images/plugins/akeyless/logo.svg"
+icon_url: "/images/plugins/akeyless-community/akelyess.svg"
 brand_color: "#01D9C1"
 display_name: "Akeyless"
 short_name: "akeyless"
 description: "Steampipe plugin to query items, auth methods, roles, etc from Akeyless."
 og_description: Query Akeyless with SQL! Open source CLI. No DB required.
-og_image: "/images/plugins/akeyless/akeyless-social-graphic.png"
+og_image: "/images/plugins/akeyless-community/akeyless-social-graphic.png"
 ---
 
 # Akeyless + Steampipe
