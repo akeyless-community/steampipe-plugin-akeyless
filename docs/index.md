@@ -1,7 +1,7 @@
 ---
 organization: Akeyless Security
 category: ["security"]
-icon_url: "/images/plugins/akeyless-community/akelyess.svg"
+icon_url: "/images/plugins/akeyless-community/akeyless.svg"
 brand_color: "#01D9C1"
 display_name: "Akeyless"
 short_name: "akeyless"

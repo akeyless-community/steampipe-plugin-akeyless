@@ -30,5 +30,5 @@ select
 from
   akeyless_item
 where
- creation_date >= CURRENT_TIMESTAMP - INTERVAL '30 days'
+ creation_date >= CURRENT_TIMESTAMP - INTERVAL '30 days';
 ```

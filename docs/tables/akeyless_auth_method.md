@@ -31,5 +31,5 @@ select
 from
   akeyless_auth_method
 where
- creation_date >= CURRENT_TIMESTAMP - INTERVAL '30 days'
+ creation_date >= CURRENT_TIMESTAMP - INTERVAL '30 days';
 ```
