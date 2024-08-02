@@ -32,5 +32,5 @@ select
 from
   akeyless_role
 where
- creation_date >= CURRENT_TIMESTAMP - INTERVAL '30 days'
+ creation_date >= CURRENT_TIMESTAMP - INTERVAL '30 days';
 ```
