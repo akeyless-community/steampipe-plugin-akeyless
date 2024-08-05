@@ -27,7 +27,7 @@ from
 
 ## Documentation
 
-- **[Table definitions & examples →](https://hub.steampipe.io/plugins/akeyless/akeyless/tables)**
+- **[Table definitions & examples →](https://hub.steampipe.io/plugins/akeyless-community/akeyless/tables)**
 
 ## Get started
 
