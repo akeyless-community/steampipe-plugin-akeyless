@@ -36,7 +36,7 @@ from
 Download and install the latest Akeyless plugin:
 
 ```shell
-steampipe plugin install akeyless/akeyless
+steampipe plugin install akeyless-community/akeyless
 ```
 
 ### Configuration
