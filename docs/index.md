@@ -29,7 +29,7 @@ from
 
 - **[Table definitions & examples →](https://hub.steampipe.io/plugins/akeyless/akeyless/tables)**
 
-## Get started.
+## Get started
 
 ### Install
 
