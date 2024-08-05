@@ -36,27 +36,27 @@ from
 Download and install the latest Akeyless plugin:
 
 ```shell
-steampipe plugin install akeyless/akeyless
+steampipe plugin install akeyless-community/akeyless
 ```
 
 ### Configuration
 
-Installing the latest Akeyless plugin will create a config file (`~/.steampipe/config/akeyless.spc`) with a single connection named `akeyless`:
+Installing the latest Akeyless plugin will create a config file (`~/.steampipe/config/akeyless.spc`) with a single connection named `akeyless`. Edit the file to include a valid `access_type` and `access_id` and uncomment any other fields as necessary:
 
 ```hcl
 connection "akeyless" {
-  plugin = "akeyless"  
+  plugin = "akeyless-community/akeyless"  
 
-  # Defines the type of access. Supported types: "api_key", "aws_iam", "azure_ad", "gcp", "universal_identity", "k8s", "jwt".
-  #access_type = ""
+  # Required. Defines the type of access. Supported types: "api_key", "aws_iam", "azure_ad", "gcp", "universal_identity", "k8s", "jwt".
+  access_type = ""
 
-  # The access ID for authentication, required for all access types.
-  #access_id = ""
+  # Required. The access ID of your auth method.
+  access_id = ""
 
-  # The access key or secret, paired with access_id.
+  # The access key or secret, paired with access_id. Only required when `access_type = api_key`.
   #access_key = ""
 
-  # API URL for the Akeyless Gateway, the default URL is https://api.akeyless.io.
+  # API URL for the Akeyless Gateway. Default URL is https://api.akeyless.io.
   #api_url = ""
 
   # JSON Web Token for JWT-based authentication.
@@ -90,7 +90,7 @@ Akeyless supports multiple authentication methods: `api_key`,`aws_iam`,`azure_ad
 
 ```hcl
 connection "akeyless" {
-  plugin    = "akeyless/akeyless"
+  plugin    = "akeyless-community/akeyless"
   access_type = "aws_iam"
   access_id = "p-xxxxxxxxxx"
 }
@@ -98,5 +98,5 @@ connection "akeyless" {
 
 ## Get involved
 
-- Open source: https://github.com/akeyless/steampipe-plugin-akeyless
+- Open source: [https://github.com/akeyless/steampipe-plugin-akeyless](https://github.com/akeyless-community/steampipe-plugin-akeyless)
 - Community: [Join #steampipe on Slack →](https://turbot.com/community/join)
