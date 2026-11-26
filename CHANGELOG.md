@@ -1,3 +1,9 @@
+# v0.0.11
+
+## Dependencies
+
+- Upgraded `go-jose/go-jose/v4` to v4.1.6 and the OpenTelemetry modules (`otel`, `otel/sdk`, `otel/trace` and related exporters) to v1.47.0 to remediate high and medium vulnerabilities.
+
 # v0.0.10
 
 ## Dependencies
